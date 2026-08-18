@@ -1,0 +1,9 @@
+{
+  "name": "epik-partner-test-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Fictional partner storefront for testing the EPIK demo-booking widget",
+  "scripts": {
+    "dev": "npx --yes serve -l 4321 ."
+  }
+}

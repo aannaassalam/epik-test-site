@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>NovaHome</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site">
+    <a class="brand" href="index.html">NovaHome</a>
+    <nav><span>Vacuums</span><span>Kitchen</span><span>Audio &amp; Video</span><span>Support</span></nav>
+  </header>
+
+  <main>
+    <div class="pdp" id="pdp"></div>
+
+    <section class="events">
+      <h3>EPIK widget events (postMessage &rarr; host page)</h3>
+      <div id="events">Waiting for widget…</div>
+    </section>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="store.js"></script>
+  <script>
+    (async () => {
+      const sku = new URLSearchParams(location.search).get("sku") || STORE.products[0].sku;
+      const item = STORE.products.find((p) => p.sku === sku);
+      const pdp = document.getElementById("pdp");
+      if (!item) { pdp.innerHTML = "<p>Unknown SKU.</p>"; return; }
+
+      const p = await loadProduct(item.epikId);
+      document.title = `${p.title} — NovaHome`;
+      pdp.innerHTML = `
+        <img src="${p.image}" alt="${p.title}" />
+        <div>
+          <div class="vendor">${p.vendor || "NovaHome"} &middot; ${item.sku}</div>
+          <h1>${p.title}</h1>
+          <div class="price">${money(p.price)}</div>
+          <button class="atc">Add to cart</button>
+
+          <!-- EPIK mount point. Renders only if this SKU is demo-eligible for our partner id. -->
+          <div data-epik-product="${item.sku}"></div>
+
+          <div class="desc">${p.descriptionHtml}</div>
+        </div>`;
+
+      // Mounted after the div exists; the loader's MutationObserver also covers late renders.
+      mountEpikWidget();
+    })();
+  </script>
+</body>
+</html>

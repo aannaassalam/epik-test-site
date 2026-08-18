@@ -1,0 +1,31 @@
+:root { --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#fff; }
+* { box-sizing: border-box; }
+body { margin:0; font:16px/1.5 system-ui,-apple-system,sans-serif; color:var(--ink); background:var(--bg); }
+a { color:inherit; text-decoration:none; }
+header.site { display:flex; align-items:center; justify-content:space-between; gap:16px;
+  padding:18px 32px; border-bottom:1px solid var(--line); position:sticky; top:0; background:#fff; z-index:10; }
+header.site .brand { font-weight:700; letter-spacing:-.02em; font-size:20px; }
+header.site nav { display:flex; gap:20px; color:var(--muted); font-size:14px; }
+main { max-width:1100px; margin:0 auto; padding:32px; }
+h1 { font-size:28px; letter-spacing:-.02em; margin:0 0 4px; }
+.sub { color:var(--muted); margin:0 0 28px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:20px; }
+.card { border:1px solid var(--line); border-radius:14px; padding:16px; display:block; transition:box-shadow .15s; }
+.card:hover { box-shadow:0 6px 24px rgba(15,23,42,.08); }
+.card img { width:100%; aspect-ratio:1; object-fit:contain; }
+.card .t { font-size:14px; font-weight:500; margin-top:10px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.card .p { font-weight:700; margin-top:6px; }
+.pdp { display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:start; }
+.pdp img { width:100%; border:1px solid var(--line); border-radius:16px; }
+.pdp .vendor { color:var(--muted); font-size:13px; text-transform:uppercase; letter-spacing:.08em; }
+.pdp .price { font-size:26px; font-weight:700; margin:12px 0 20px; }
+.pdp .desc { color:var(--muted); font-size:14px; max-height:260px; overflow:auto; }
+.atc { width:100%; padding:14px; border:0; border-radius:10px; background:var(--ink); color:#fff;
+  font:600 15px system-ui; cursor:pointer; }
+.atc.ghost { background:#fff; color:var(--ink); border:1px solid var(--ink); margin-top:10px; }
+/* The EPIK mount point. Height is the widget's business; we only reserve rhythm. */
+[data-epik-product] { display:block; margin-top:12px; }
+.events { margin-top:48px; border-top:1px solid var(--line); padding-top:16px; }
+.events h3 { font-size:13px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin:0 0 8px; }
+#events { font:12px/1.7 ui-monospace,SFMono-Regular,Menlo,monospace; color:var(--muted); max-height:180px; overflow:auto; }
+@media (max-width:760px) { .pdp { grid-template-columns:1fr; gap:24px; } main { padding:20px; } header.site { padding:16px 20px; } }
