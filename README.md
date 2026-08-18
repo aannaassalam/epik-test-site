@@ -30,13 +30,17 @@ The store pastes one tag and one div — nothing else:
 <div data-epik-product="NJ-VAC-A20"></div>
 ```
 
-`embed.js` fetches `/api/widget/config/ninja-demo`, then:
+`embed.js` fetches `/api/widget/config/ninja-demo`, then renders everything the partner's
+page can see — trigger button, FAB, backdrop, modal, drawer — inside a **closed shadow
+root**, so neither side's CSS can reach the other:
 
-- renders a **trigger button** into every `[data-epik-product]` whose SKU is on the
-  allowlist, inside a **closed shadow root** (partner CSS can't reach in, partner JS can't reach out);
-- renders a **floating FAB** for the sitewide catalog entry point;
-- opens the booking flow in a **fixed iframe on the EPIK origin**, so the OTP session
-  token stays on EPIK's `localStorage`, never the partner's.
+- a **trigger button** in every `[data-epik-product]` whose SKU is on the allowlist;
+- a **floating FAB** for the sitewide catalog;
+- a **centred modal** for a single product, a **right drawer** for the catalog, both a
+  **bottom sheet** under 640px. Escape and backdrop click dismiss.
+
+Only the flow content runs in an iframe on the EPIK origin — that's what keeps the OTP
+session token on EPIK's `localStorage` and out of the partner's.
 
 Product data on this store is fetched live from the EPIK API (`/shopify/products/:id`),
 so the PDP and the widget always show the same product.
@@ -47,7 +51,9 @@ so the PDP and the widget always show the same product.
 |---|---|
 | Button renders on a demo-eligible SKU | any product except `NJ-ACC-FILTER` |
 | Button does **not** render on an ineligible SKU | `product.html?sku=NJ-ACC-FILTER` |
-| Partner CSS can't restyle the button | shadow root is `closed` |
+| Partner CSS can't restyle the widget | shadow root is `closed` — `el.shadowRoot` is `null` |
+| Catalog is a drawer, booking is a modal | FAB vs product button |
+| Both become a bottom sheet on mobile | narrow the viewport under 640px |
 | FAB opens the full demo-eligible catalog | bottom-right, any page |
 | Funnel events reach the host page | "EPIK widget events" panel at page bottom |
 | Framing is partner-gated | `/embed` without `?partner=` → 404 |
