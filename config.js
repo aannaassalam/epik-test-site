@@ -1,11 +1,12 @@
 /**
  * NovaHome — fictional partner storefront used to test the EPIK widget.
- * Point `epikOrigin` at your running frontend (localhost:3000) or beta.getepik.in.
+ *
+ * The widget is loaded by the <script> tag at the bottom of each page, not from here.
+ * To point it at a deployed EPIK, edit the src in index.html and product.html.
  */
 window.STORE = {
   name: "NovaHome",
   partnerId: "ninja-demo",
-  epikOrigin: localStorage.getItem("epikOrigin") || "http://localhost:3000",
   epikApi: "https://epik-consumer-service.onrender.com",
 
   // The partner's own catalog, in the partner's own SKUs.

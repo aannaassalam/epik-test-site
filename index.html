@@ -1,49 +1,65 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>NovaHome — Smart Home Appliances</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <header class="site">
-    <a class="brand" href="index.html">NovaHome</a>
-    <nav><span>Vacuums</span><span>Kitchen</span><span>Audio &amp; Video</span><span>Support</span></nav>
-  </header>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>NovaHome — Smart Home Appliances</title>
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+    <body>
+        <header class="site">
+            <a class="brand" href="index.html">NovaHome</a>
+            <nav>
+                <span>Vacuums</span><span>Kitchen</span
+                ><span>Audio &amp; Video</span><span>Support</span>
+            </nav>
+        </header>
 
-  <main>
-    <h1>Smart home, sorted.</h1>
-    <p class="sub">A fictional partner storefront used to test the EPIK demo-booking widget.</p>
-    <div class="grid" id="grid"></div>
+        <main>
+            <h1>Smart home, sorted.</h1>
+            <p class="sub">
+                A fictional partner storefront used to test the EPIK
+                demo-booking widget.
+            </p>
+            <div class="grid" id="grid"></div>
 
-    <section class="events">
-      <h3>EPIK widget events (postMessage &rarr; host page)</h3>
-      <div id="events">Waiting for widget…</div>
-    </section>
-  </main>
+            <section class="events">
+                <h3>EPIK widget events (postMessage &rarr; host page)</h3>
+                <div id="events">Waiting for widget…</div>
+            </section>
+        </main>
 
-  <script src="config.js"></script>
-  <script src="store.js"></script>
-  <script>
-    (async () => {
-      const grid = document.getElementById("grid");
-      const cards = await Promise.all(STORE.products.map(async (item) => {
-        try {
-          const p = await loadProduct(item.epikId);
-          return `<a class="card" href="product.html?sku=${item.sku}">
+        <script src="config.js"></script>
+        <script src="store.js"></script>
+        <script>
+            (async () => {
+                const grid = document.getElementById("grid");
+                const cards = await Promise.all(
+                    STORE.products.map(async (item) => {
+                        try {
+                            const p = await loadProduct(item.epikId);
+                            return `<a class="card" href="product.html?sku=${item.sku}">
             <img src="${p.image}" alt="" />
             <div class="t">${p.title}</div>
             <div class="p">${money(p.price)}</div>
           </a>`;
-        } catch (e) {
-          console.warn("[store]", item.sku, e.message);
-          return "";
-        }
-      }));
-      grid.innerHTML = cards.join("") || "<p class='sub'>Could not load catalog.</p>";
-      mountEpikWidget();
-    })();
-  </script>
-</body>
+                        } catch (e) {
+                            console.warn("[store]", item.sku, e.message);
+                            return "";
+                        }
+                    }),
+                );
+                grid.innerHTML =
+                    cards.join("") ||
+                    "<p class='sub'>Could not load catalog.</p>";
+                logEpikEvents();
+            })();
+        </script>
+
+        <!-- The EPIK widget. This is the line a partner pastes — nothing else is needed. -->
+        <script
+            src="https://frontend-epik-pr-385.onrender.com/embed.js"
+            data-partner="ninja-demo"
+        ></script>
+    </body>
 </html>

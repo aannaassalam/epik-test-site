@@ -15,20 +15,22 @@ npm run dev                            # http://localhost:4321
 
 Open http://localhost:4321 and click any product.
 
-To test against a deployed EPIK instead of localhost:
-
-```js
-localStorage.setItem("epikOrigin", "https://beta.getepik.in"); location.reload();
-```
+To test against a deployed EPIK instead of localhost, edit the `src` on the widget
+script tag in `index.html` and `product.html`.
 
 ## How the integration works
 
-The store pastes one tag and one div — nothing else:
+The store pastes one tag and one div — nothing else. Both are literal in this repo:
+the tag sits at the bottom of [`index.html`](index.html) and [`product.html`](product.html),
+and the mount point is in the PDP markup.
 
 ```html
-<script src="https://www.getepik.in/embed.js" data-partner="ninja-demo"></script>
+<script src="http://localhost:3000/embed.js" data-partner="ninja-demo"></script>
 <div data-epik-product="NJ-VAC-A20"></div>
 ```
+
+The tag loads before the PDP markup is rendered, so this also exercises the loader's
+`MutationObserver` — the same situation as a partner store that renders client-side.
 
 `embed.js` fetches `/api/widget/config/ninja-demo`, then renders everything the partner's
 page can see — trigger button, FAB, backdrop, modal, drawer — inside a **closed shadow

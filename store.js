@@ -22,16 +22,14 @@ function normalise(product) {
 const loadProduct = async (epikId) =>
   normalise((await api(`/shopify/products/${epikId}`)).product);
 
-/** Injects the EPIK loader with this store's partner id. */
-function mountEpikWidget() {
-  const s = document.createElement("script");
-  s.src = `${STORE.epikOrigin}/embed.js`;
-  s.dataset.partner = STORE.partnerId;
-  document.body.appendChild(s);
-
-  // PRD §9 — the widget re-dispatches its funnel events on the host page.
+/**
+ * The widget itself is loaded by the plain <script> tag at the bottom of each page —
+ * exactly the line a partner pastes. This only mirrors its events into the panel.
+ */
+function logEpikEvents() {
   const log = document.getElementById("events");
-  ["widget_loaded", "widget_opened", "product_selected", "booking_confirmed", "widget_closed"]
+  ["widget_loaded", "widget_opened", "product_selected", "otp_verified",
+   "address_selected", "slot_selected", "booking_confirmed", "widget_closed"]
     .forEach((name) =>
       window.addEventListener(`epik:${name}`, (e) => {
         if (!log) return;
