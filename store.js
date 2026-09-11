@@ -22,6 +22,19 @@ function normalise(product) {
 const loadProduct = async (epikId) =>
   normalise((await api(`/shopify/products/${epikId}`)).product);
 
+/** Resolve a path against EPIK's origin; absolute URLs pass through untouched. */
+const epikUrl = (path) =>
+  /^https?:/.test(path) ? path : `${STORE.epikOrigin}${path}`;
+
+/**
+ * Catalog data for one entry: live from EPIK, or the static copy carried in
+ * config.js for products EPIK does not list yet.
+ */
+const resolveProduct = async (item) =>
+  item.static
+    ? { ...item.static, image: epikUrl(item.static.image) }
+    : loadProduct(item.epikId);
+
 /**
  * The widget itself is loaded by the plain <script> tag at the bottom of each page —
  * exactly the line a partner pastes. This only mirrors its events into the panel.

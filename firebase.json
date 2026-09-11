@@ -4,6 +4,7 @@
     "public": ".",
     "ignore": [
       "firebase.json",
+      "serve.json",
       "**/.*",
       "**/node_modules/**"
     ]

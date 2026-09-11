@@ -29,3 +29,12 @@ h1 { font-size:28px; letter-spacing:-.02em; margin:0 0 4px; }
 .events h3 { font-size:13px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin:0 0 8px; }
 #events { font:12px/1.7 ui-monospace,SFMono-Regular,Menlo,monospace; color:var(--muted); max-height:180px; overflow:auto; }
 @media (max-width:760px) { .pdp { grid-template-columns:1fr; gap:24px; } main { padding:20px; } header.site { padding:16px 20px; } }
+
+/* ── EPIK brand-microsite banner ───────────────────────────────────────────
+   Sits in the info column, exactly where the demo button would be, on products
+   EPIK runs from a microsite. */
+.epik-banner { display:block; margin-top:12px; border-radius:10px;
+  overflow:hidden; transition:filter .15s; }
+/* aspect-ratio matches the asset, so the row is reserved before it decodes. */
+.epik-banner img { display:block; width:100%; height:auto; aspect-ratio:2219/493; }
+.epik-banner:hover { filter:brightness(1.06); }

@@ -38,8 +38,14 @@
                     return;
                 }
 
-                const p = await loadProduct(item.epikId);
+                const p = await resolveProduct(item);
                 document.title = `${p.title} — NovaHome`;
+                const banner = `
+        <a class="epik-banner" href="${epikUrl(item.microsite || "")}">
+          <img src="${epikUrl("/assets/images/xiaomi/live-demo-banner.webp")}"
+               alt="Take a live demo today of ${p.title} — powered by Epik" />
+        </a>`;
+
                 pdp.innerHTML = `
         <img src="${p.image}" alt="${p.title}" />
         <div>
@@ -48,8 +54,9 @@
           <div class="price">${money(p.price)}</div>
           <button class="atc">Add to cart</button>
 
-          <!-- EPIK mount point. Renders only if this SKU is demo-eligible for our partner id. -->
-          <div data-epik-product="${item.sku}"></div>
+          <!-- EPIK mount point. Renders only if this SKU is demo-eligible for our
+               partner id — and never for products EPIK runs from a microsite. -->
+          ${item.microsite ? banner : `<div data-epik-product="${item.sku}"></div>`}
 
           <div class="desc">${p.descriptionHtml}</div>
         </div>`;
@@ -58,10 +65,18 @@
             })();
         </script>
 
-        <!-- The EPIK widget. This is the line a partner pastes — nothing else is needed. -->
-        <script
-            src="http://localhost:3000/embed.js"
-            data-partner="ninja-demo"
-        ></script>
+        <!-- The EPIK widget. A partner pastes exactly one literal tag:
+               <script src="https://www.getepik.in/embed.js" data-partner="caresmith"></script>
+             This test store builds that same tag from STORE.epikOrigin so it can be
+             pointed at any EPIK environment without editing two files. -->
+        <script>
+            (() => {
+                const tag = document.createElement("script");
+                tag.src = `${STORE.epikOrigin}/embed.js`;
+                // Must be set before append: embed.js reads document.currentScript.
+                tag.dataset.partner = STORE.partnerId;
+                document.body.appendChild(tag);
+            })();
+        </script>
     </body>
 </html>

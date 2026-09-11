@@ -15,8 +15,18 @@ npm run dev                            # http://localhost:4321
 
 Open http://localhost:4321 and click any product.
 
-To test against a deployed EPIK instead of localhost, edit the `src` on the widget
-script tag in `index.html` and `product.html`.
+`npm run dev` kills whatever holds :4321 first — `serve` otherwise falls back to a
+random port and the stale process keeps answering :4321 with old code, which looks
+exactly like "only the first product works".
+
+`serve.json` turns off `cleanUrls`: with it on, `serve` 301s `product.html?sku=X` to
+`/product` and **drops the query**, so every card opened the first product. Firebase
+serves the `.html` paths as-is, so this just keeps local behaviour honest.
+
+The EPIK origin is derived, not hardcoded: localhost when this store is served from
+localhost, the `frontend` PR-385 preview otherwise (getepik.in has neither
+`/embed.js` nor the Xiaomi microsite yet). Point it anywhere with `?epik=`, e.g.
+`http://localhost:4321/product.html?sku=CS-001&epik=https://beta.getepik.in`.
 
 ## How the integration works
 
@@ -25,14 +35,17 @@ the tag sits at the bottom of [`index.html`](index.html) and [`product.html`](pr
 and the mount point is in the PDP markup.
 
 ```html
-<script src="http://localhost:3000/embed.js" data-partner="ninja-demo"></script>
-<div data-epik-product="NJ-VAC-A20"></div>
+<script src="https://www.getepik.in/embed.js" data-partner="caresmith"></script>
+<div data-epik-product="CS-001"></div>
 ```
+
+(This store builds that tag from `STORE.epikOrigin` rather than writing it literally,
+so one config value repoints every page.)
 
 The tag loads before the PDP markup is rendered, so this also exercises the loader's
 `MutationObserver` — the same situation as a partner store that renders client-side.
 
-`embed.js` fetches `/api/widget/config/ninja-demo`, then renders everything the partner's
+`embed.js` fetches `/api/widget/config/caresmith`, then renders everything the partner's
 page can see — trigger button, FAB, backdrop, modal, drawer — inside a **closed shadow
 root**, so neither side's CSS can reach the other:
 
@@ -51,12 +64,13 @@ so the PDP and the widget always show the same product.
 
 | Check | Where |
 |---|---|
-| Button renders on a demo-eligible SKU | any product except `NJ-ACC-FILTER` |
-| Button does **not** render on an ineligible SKU | `product.html?sku=NJ-ACC-FILTER` |
+| Button renders on an allowlisted SKU | `product.html?sku=CS-001` |
+| Button does **not** render on a SKU EPIK has not allowlisted | drop `CS-001` from the brand's widget config and reload |
 | Partner CSS can't restyle the widget | shadow root is `closed` — `el.shadowRoot` is `null` |
 | Catalog is a drawer, booking is a modal | FAB vs product button |
 | Both become a bottom sheet on mobile | narrow the viewport under 640px |
 | FAB opens the full demo-eligible catalog | bottom-right, any page |
+| A microsite product shows the banner, not a button | `product.html?sku=NJ-PHONE-RN17P` |
 | Funnel events reach the host page | "EPIK widget events" panel at page bottom |
 | Framing is partner-gated | `/embed` without `?partner=` → 404 |
 
