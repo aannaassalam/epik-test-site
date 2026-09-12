@@ -56,6 +56,7 @@
 
           <!-- EPIK mount point. Renders only if this SKU is demo-eligible for our
                partner id — and never for products EPIK runs from a microsite. -->
+               <!-- Jayesh Script -->
           ${item.microsite ? banner : `<div data-epik-product="${item.sku}"></div>`}
 
           <div class="desc">${p.descriptionHtml}</div>
@@ -69,6 +70,7 @@
                <script src="https://www.getepik.in/embed.js" data-partner="caresmith"></script>
              This test store builds that same tag from STORE.epikOrigin so it can be
              pointed at any EPIK environment without editing two files. -->
+        <!-- Jayesh Script -->
         <script>
             (() => {
                 const tag = document.createElement("script");
